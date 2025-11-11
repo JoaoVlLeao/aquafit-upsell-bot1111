@@ -38,20 +38,28 @@ client.on("qr", (qr) => {
   const elapsed = now - lastQRTime;
 
   if (elapsed < 120000) {
-    console.log(chalk.gray("⚠️ QR code atualizado, aguardando 2 minutos antes de exibir novamente..."));
+    console.log(
+      chalk.gray("⚠️ QR code atualizado, aguardando 2 minutos antes de exibir novamente...")
+    );
     return;
   }
 
   lastQRTime = now;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qr)}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(
+    qr
+  )}`;
 
   console.log(chalk.cyan("\n📱 Escaneie o QR code no navegador (válido por ~2 minutos):"));
   console.log(chalk.yellow(qrUrl));
-  console.log(chalk.gray("💚 Após escanear, aguarde alguns segundos até a conexão ser estabelecida..."));
+  console.log(
+    chalk.gray("💚 Após escanear, aguarde alguns segundos até a conexão ser estabelecida...")
+  );
 });
 
+let isReady = false;
 client.on("ready", () => {
   console.log(chalk.green("✅ WhatsApp conectado e pronto!"));
+  isReady = true;
 });
 
 client.initialize();
@@ -69,8 +77,20 @@ async function processQueue() {
   const { phone, message, media } = messageQueue.shift();
 
   try {
+    // Aguarda o WhatsApp estar pronto antes de enviar
+    if (!isReady) {
+      console.log(chalk.yellow("⏳ WhatsApp ainda não está pronto. Tentando novamente em 30s..."));
+      messageQueue.unshift({ phone, message, media }); // volta pra fila
+      setTimeout(() => {
+        isProcessing = false;
+        processQueue();
+      }, 30000);
+      return;
+    }
+
     const formatted = phone.replace(/\D/g, "");
     const numberId = await client.getNumberId(formatted);
+
     if (!numberId) {
       console.log(chalk.red(`⚠️ O número ${phone} não tem WhatsApp.`));
       isProcessing = false;
@@ -78,8 +98,14 @@ async function processQueue() {
     }
 
     const chat = await client.getChatById(numberId._serialized);
+    if (!chat) {
+      console.log(chalk.red(`⚠️ Não foi possível obter o chat de ${phone}.`));
+      isProcessing = false;
+      return;
+    }
+
     await chat.sendMessage(media, { caption: message });
-    console.log(chalk.green(`✅ Mensagem enviada para ${phone}`));
+    console.log(chalk.green(`✅ Mensagem enviada com sucesso para ${phone}`));
   } catch (err) {
     console.error(chalk.red("❌ Erro ao enviar mensagem:"), err);
   }
@@ -114,12 +140,16 @@ app.post("/shopify", async (req, res) => {
     console.log("------------------------------------------------");
 
     if (data.financial_status !== "paid") {
-      console.log(chalk.gray(`⚠️ Pedido ${data.name} ignorado (status: ${data.financial_status})`));
+      console.log(
+        chalk.gray(`⚠️ Pedido ${data.name} ignorado (status: ${data.financial_status})`)
+      );
       return res.status(200).send("Ignorado - não pago");
     }
 
     if (!phone) {
-      console.log(chalk.red(`❌ Pedido ${data.name} sem telefone — não foi possível enviar mensagem.`));
+      console.log(
+        chalk.red(`❌ Pedido ${data.name} sem telefone — não foi possível enviar mensagem.`)
+      );
       return res.status(200).send("Sem telefone");
     }
 
@@ -145,7 +175,9 @@ Com carinho,
 *Equipe AquaFit Brasil* 💚💖`;
 
     messageQueue.push({ phone, message, media });
-    console.log(chalk.magenta(`🕒 Pedido ${data.name} adicionado à fila (${messageQueue.length} pendente(s))`));
+    console.log(
+      chalk.magenta(`🕒 Pedido ${data.name} adicionado à fila (${messageQueue.length} pendente(s))`)
+    );
 
     processQueue();
     res.status(200).send("Mensagem adicionada à fila");
