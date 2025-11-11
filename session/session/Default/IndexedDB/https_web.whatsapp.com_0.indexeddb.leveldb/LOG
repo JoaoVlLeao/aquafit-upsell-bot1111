@@ -1,0 +1,21 @@
+2025/11/11-03:17:22.430 1a06c Reusing MANIFEST C:\Users\joao-\OneDrive\Desktop\Upssel.bot\session\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/11/11-03:17:22.430 1a06c Recovering log #319
+2025/11/11-03:17:22.442 1a06c Reusing old log C:\Users\joao-\OneDrive\Desktop\Upssel.bot\session\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000319.log 
+2025/11/11-03:17:24.220 9db8 Level-0 table #328: started
+2025/11/11-03:17:24.225 9db8 Level-0 table #328: 269313 bytes OK
+2025/11/11-03:17:24.226 9db8 Delete type=0 #319
+2025/11/11-03:17:24.227 9db8 Manual compaction at level-0 from '\x00#\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00$\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/11/11-03:17:25.881 12278 Compacting 1@1 + 5@2 files
+2025/11/11-03:17:25.963 12278 Generated table #329@1: 87834 keys, 2238618 bytes
+2025/11/11-03:17:26.043 12278 Generated table #330@1: 98352 keys, 2250625 bytes
+2025/11/11-03:17:26.114 12278 Generated table #331@1: 87669 keys, 2247367 bytes
+2025/11/11-03:17:26.198 12278 Generated table #332@1: 37992 keys, 2201665 bytes
+2025/11/11-03:17:26.234 12278 Generated table #333@1: 22108 keys, 767800 bytes
+2025/11/11-03:17:26.234 12278 Compacted 1@1 + 5@2 files => 9706075 bytes
+2025/11/11-03:17:26.234 12278 compacted to: files[ 0 0 5 0 0 0 0 ]
+2025/11/11-03:17:26.235 12278 Delete type=2 #321
+2025/11/11-03:17:26.235 12278 Delete type=2 #322
+2025/11/11-03:17:26.235 12278 Delete type=2 #323
+2025/11/11-03:17:26.235 12278 Delete type=2 #324
+2025/11/11-03:17:26.235 12278 Delete type=2 #325
+2025/11/11-03:17:26.235 12278 Delete type=2 #328
