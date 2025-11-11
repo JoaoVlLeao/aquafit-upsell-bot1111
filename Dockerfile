@@ -1,7 +1,7 @@
-# Usa Node 22 oficial
+# Usa Node 22 no Debian Bullseye (Railway friendly)
 FROM node:22-bullseye
 
-# Instala dependências necessárias pro Chromium do Puppeteer
+# Instala dependências do Chrome necessárias para o Puppeteer
 RUN apt-get update && apt-get install -y \
   wget \
   gnupg \
@@ -21,7 +21,6 @@ RUN apt-get update && apt-get install -y \
   libpangocairo-1.0-0 \
   libpango-1.0-0 \
   libcairo2 \
-  libasound2t64 \
   libx11-xcb1 \
   libx11-6 \
   fonts-liberation \
@@ -30,17 +29,17 @@ RUN apt-get update && apt-get install -y \
   xdg-utils \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Define o diretório de trabalho
+# Define diretório de trabalho
 WORKDIR /app
 
-# Copia os arquivos do projeto
+# Copia arquivos e instala dependências do projeto
 COPY package*.json ./
 RUN npm install
 
 COPY . .
 
-# Expõe a porta do servidor
+# Expõe a porta da aplicação
 EXPOSE 8080
 
-# Comando de inicialização
+# Inicializa o app
 CMD ["npm", "start"]
