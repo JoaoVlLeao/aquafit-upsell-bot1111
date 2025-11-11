@@ -30,10 +30,24 @@ const client = new Client({
   },
 });
 
+// Controla frequência de exibição do QR code (a cada 2 minutos)
+let lastQRTime = 0;
+
 client.on("qr", (qr) => {
+  const now = Date.now();
+  const elapsed = now - lastQRTime;
+
+  if (elapsed < 120000) {
+    console.log(chalk.gray("⚠️ QR code atualizado, aguardando 2 minutos antes de exibir novamente..."));
+    return;
+  }
+
+  lastQRTime = now;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qr)}`;
-  console.log(chalk.cyan("\n📱 Escaneie o QR code no navegador:"));
-  console.log(qrUrl);
+
+  console.log(chalk.cyan("\n📱 Escaneie o QR code no navegador (válido por ~2 minutos):"));
+  console.log(chalk.yellow(qrUrl));
+  console.log(chalk.gray("💚 Após escanear, aguarde alguns segundos até a conexão ser estabelecida..."));
 });
 
 client.on("ready", () => {
@@ -122,7 +136,7 @@ Agradecemos por confiar na *AquaFit Brasil* 💚
 Durante as próximas horas, você ganha *30% OFF* em todo o site! 😍  
 Use o cupom exclusivo: *FLZ30*
 
-🔗www.aquafitbrasil.com
+🔗 www.aquafitbrasil.com  
 
 🩱 Vale para qualquer biquíni, maiô ou saída de praia!  
 Mas corra — a promoção é por tempo limitado. 💨
